@@ -7,7 +7,7 @@ int main()
 {
     /*Ani ->addRoom("MJ1");
 
-    Ani ->addItem("Name1 ze spacj¹", "Opis xD");
+    Ani ->addItem("Name1 ze spacjami", "Opis xD");
     Ani ->addItem("Name2", "Opis xD");
     Ani ->addItem("Name3", "Opis xD");
     Ani ->addItem("Name4", "Opis xD");

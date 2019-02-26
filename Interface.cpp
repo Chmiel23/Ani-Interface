@@ -88,7 +88,7 @@ void Interface::saveState()
     {
         if (ItemID_Item_rel[i] != NULL)
         {
-            save << i << " " << ItemID_Item_rel[i] -> name << TAB << ItemID_Item_rel[i] -> description << endl;
+            save << i << TAB << ItemID_Item_rel[i] -> name << TAB << ItemID_Item_rel[i] -> description << endl;
             i++;
         }
     }
@@ -153,14 +153,35 @@ void Interface::loadState()
 {
     fstream load;
     string buffer, name, description;
+    int room_id, item_id, i_buff;
     load.open ("IDRooms.ini", fstream::in);
 
     getline(load,buffer);
-    if (compare(buffer,"[ID->Room]"))
+    if (buffer.compare ("[ID->Rooms]"))
         return;
-
-    buffer.clear();
-    getline(load,buffer);
-
-
+    while(getline(load, buffer))
+    {
+        istringstream ss(buffer);
+        buffer.clear();
+        ss >> room_id;
+        ss >> name;
+        if ( room_id == 0 && !name.compare("DEPO"))
+        {
+            while (!ss.eof())
+            {
+                ss >> item_id;
+                roomState(0) -> list -> push_back(item_id);
+            }
+        }
+        else
+        {
+            i_buff = addRoom (name);
+            roomState(i_buff) -> id = room_id;
+            while (!ss.eof())
+            {
+                ss >> item_id;
+                roomState(room_id) -> list -> push_back(item_id);
+            }
+        }
+    }
 }
