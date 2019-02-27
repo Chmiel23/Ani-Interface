@@ -5,7 +5,7 @@ using namespace std;
 Interface* Ani = new Interface();
 int main()
 {
-    /*Ani ->addRoom("MJ1");
+    /*Ani ->addRoom("MJ1 ze spacja");
 
     Ani ->addItem("Name1 ze spacjami", "Opis xD");
     Ani ->addItem("Name2", "Opis xD");

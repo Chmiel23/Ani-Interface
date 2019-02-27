@@ -103,11 +103,11 @@ void Interface::saveState()
     {
         if (RoomID_Room_rel[i] != NULL)
         {
-            save << RoomID_Room_rel[i] -> id << " " << RoomID_Room_rel[i] -> name << TAB;
-            for (unsigned int j=0;j<RoomID_Room_rel[i]->list->size();j++)
+            save << RoomID_Room_rel[i] -> id << TAB << RoomID_Room_rel[i] -> name << TAB;
+            /*for (unsigned int j=0;j<RoomID_Room_rel[i]->list->size();j++)
             {
                 save << RoomID_Room_rel[i]->list->at(j)<< " ";
-            }
+            } //Zapis listy itemsów, docelowo do usunięcia */
             i++;
         }
         save << endl;
@@ -154,34 +154,41 @@ void Interface::loadState()
     fstream load;
     string buffer, name, description;
     int room_id, item_id, i_buff;
+     /**Load ID -> Rooms **/
     load.open ("IDRooms.ini", fstream::in);
-
     getline(load,buffer);
     if (buffer.compare ("[ID->Rooms]"))
         return;
+
     while(getline(load, buffer))
     {
         istringstream ss(buffer);
         buffer.clear();
-        ss >> room_id;
-        ss >> name;
-        if ( room_id == 0 && !name.compare("DEPO"))
+        name.clear();
+        ss >> room_id;       //Ładowanie ID
+
+        ss >> buffer;
+        while (!ss.eof()) //Ładowanie nazwy
         {
-            while (!ss.eof())
-            {
-                ss >> item_id;
-                roomState(0) -> list -> push_back(item_id);
-            }
+            name += buffer;
+            ss >> buffer;
+            if (!ss.eof())
+                name += " ";
         }
-        else
+
+        if ( room_id != 0 ) //Jeżeli id=0 nie robić nowego depo
+            RoomID_Room_rel [room_id] = new Room(room_id,name);
+
+        /*while (!ss.eof()) //Ładowanie itemsów [do przeniesienia w ładowanie innej tabeli]
         {
-            i_buff = addRoom (name);
-            roomState(i_buff) -> id = room_id;
-            while (!ss.eof())
-            {
-                ss >> item_id;
-                roomState(room_id) -> list -> push_back(item_id);
-            }
-        }
+            ss >> item_id;
+            RoomID_Room_rel [room_id] -> list -> push_back(item_id);
+        }*/
     }
+
+    load.close();
+    /**Load ID -> Items **/
+
+    load.open ("IDItems.ini", fstream::in);
+    getline(load,buffer);
 }
