@@ -76,12 +76,13 @@ Room* Interface::roomState (int index)
 	return RoomID_Room_rel [index];
 }
 
-void Interface::saveState()
+bool Interface::saveState()
 {
     fstream save;
     /**ItemID -> ITEMS ---------------------------------------*/
     save.open("IDItems.ini", fstream::out | fstream::trunc);
-
+    if (!save.is_open())
+        return false;
     save << "[ID->Items]" << endl;
     unsigned int i = 0;
     while ( i < ItemID_RoomID_rel.size() )
@@ -97,6 +98,8 @@ void Interface::saveState()
 
     /** RoomID ->ROOMS --------------------------------------*/
     save.open("IDRooms.ini", fstream::out | fstream::trunc);
+    if (!save.is_open())
+        return false;
     save << "[ID->Rooms]" << endl;
     i = 0;
     while ( i < RoomID_Room_rel.size() )
@@ -116,6 +119,8 @@ void Interface::saveState()
 
     /**Item -> Room ------------------------------------------*/
     save.open("ItemId-RoomID.ini", fstream::out | fstream::trunc);
+    if (!save.is_open())
+        return false;
     save << "[Item->Room]" << endl;
     i=0;
     while ( i < ItemID_RoomID_rel.size() )
@@ -130,8 +135,9 @@ void Interface::saveState()
 
     /**Room -> Items -----------------------------------------*/
     save.open("RoomId-ItemID.ini", fstream::out | fstream::trunc);
+    if (!save.is_open())
+        return false;
     save << "[Room->Item]" << endl;
-
     i=0;
     while ( i < RoomID_ItemID_rel.size() )
     {
@@ -146,35 +152,29 @@ void Interface::saveState()
             i++;
         }
     }
-
+    return true;
 }
 
-void Interface::loadState()
+bool Interface::loadState()
 {
     fstream load;
     string buffer, name, description;
-    int room_id, item_id, i_buff;
+    int room_id, item_id;
      /**Load ID -> Rooms **/
     load.open ("IDRooms.ini", fstream::in);
+    if (!load.is_open())
+        return false;
     getline(load,buffer);
     if (buffer.compare ("[ID->Rooms]"))
-        return;
+        return false;
 
     while(getline(load, buffer))
     {
         istringstream ss(buffer);
-        buffer.clear();
-        name.clear();
         ss >> room_id;       //Ładowanie ID
 
-        ss >> buffer;
-        while (!ss.eof()) //Ładowanie nazwy
-        {
-            name += buffer;
-            ss >> buffer;
-            if (!ss.eof())
-                name += " ";
-        }
+        getline (ss,buffer,TAB);
+        getline (ss,name,TAB);
 
         if ( room_id != 0 ) //Jeżeli id=0 nie robić nowego depo
             RoomID_Room_rel [room_id] = new Room(room_id,name);
@@ -185,10 +185,67 @@ void Interface::loadState()
             RoomID_Room_rel [room_id] -> list -> push_back(item_id);
         }*/
     }
-
     load.close();
-    /**Load ID -> Items **/
 
+    /**Load ID -> Items **/
     load.open ("IDItems.ini", fstream::in);
+    if (!load.is_open())
+        return false;
     getline(load,buffer);
+
+    if (buffer.compare ("[ID->Items]"))
+        return false;
+    while (getline(load, buffer))
+    {
+        istringstream ss(buffer);
+
+        ss >> item_id;
+        getline(ss,buffer,TAB);
+        getline(ss,name,TAB);
+        getline(ss,description,TAB);
+
+        ItemID_Item_rel [item_id] = new Item(item_id, name, description);
+
+    }
+    load.close();
+
+    /**Load Item -> Room */
+    load.open ("ItemId-RoomID.ini", fstream::in);
+    if (!load.is_open())
+        return false;
+    getline(load,buffer);
+    if (buffer.compare ("[Item->Room]"))
+        return false;
+
+    while(!load.eof())
+    {
+        load >> item_id;
+        load >> room_id;
+        ItemID_RoomID_rel [item_id] = room_id;
+    }
+    load.close();
+
+    /**Load Room -> Item*/
+    load.open ("RoomId-ItemID.ini", fstream::in);
+    if (!load.is_open())
+        return false;
+    getline(load,buffer);
+    if (buffer.compare ("[Room->Item]"))
+        return false;
+    while(getline(load, buffer))
+    {
+        istringstream ss(buffer);
+
+        ss >> room_id;
+
+        RoomID_ItemID_rel [room_id] = new vector<int>;
+        RoomID_Room_rel [room_id] -> list = RoomID_ItemID_rel [room_id];
+
+        while (!ss.eof())
+        {
+            ss >> item_id;
+            RoomID_ItemID_rel [room_id] -> push_back(item_id);
+        }
+    }
+    return true;
 }

@@ -22,8 +22,8 @@ class Interface
 		Item* itemState(int);
 		Room* roomState(int);
 
-		void saveState();
-		void loadState();
+		bool saveState();
+		bool loadState();
 
 	private:
 		map<int,Room*>			RoomID_Room_rel;

@@ -5,7 +5,7 @@ using namespace std;
 Interface* Ani = new Interface();
 int main()
 {
-    /*Ani ->addRoom("MJ1 ze spacja");
+    Ani ->addRoom("MJ1 ze spacja");
 
     Ani ->addItem("Name1 ze spacjami", "Opis xD");
     Ani ->addItem("Name2", "Opis xD");
@@ -16,11 +16,11 @@ int main()
     Ani ->itemOut(1,1);
     Ani ->itemOut(2,1);
 
-    Ani -> saveState();*/
+    Ani -> saveState();
 
     Ani -> loadState();
 
-    //cout << Ani ->roomState(1) ->list -> at(0);
+    cout << Ani ->roomState(0) ->list -> at(2);
 
     return 0;
 }
