@@ -5,9 +5,11 @@ using namespace std;
 struct Room
 {
 	Room();
-	Room(int,string);
-		
+	Room(const Room&);
+	Room(int,string,vector<int>&);
+    Room& operator=(const Room&);
+
 	int id;
 	string name;
-	vector<int>* list;
+	vector<int>& list;
 };

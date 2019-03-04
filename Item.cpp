@@ -1,6 +1,6 @@
 #include "Item.h"
 
-Item::Item(): ID(0), name("NAME"), description ("DESC")
+Item::Item(): ID(-1), name("NAME"), description ("DESC")
 {}
 
 Item::Item(int _ID, string _name, string _description):

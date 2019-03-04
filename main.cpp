@@ -18,9 +18,9 @@ int main()
 
     Ani -> saveState();
 
-    Ani -> loadState();
+    //Ani -> loadState();
 
-    cout << Ani ->roomState(0) ->list -> at(2);
+    cout << Ani->roomState(1).list [1];
 
     return 0;
 }
